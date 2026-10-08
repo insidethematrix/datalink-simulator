@@ -1,0 +1,7 @@
+# Sanal ortam (herkes kendi bilgisayarında requirements.txt ile kurar)
+.venv/
+
+# Python'un otomatik oluşturduğu önbellek dosyaları
+__pycache__/
+*.pyc
+.pytest_cache/
