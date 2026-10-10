@@ -25,3 +25,22 @@ tests/           -> testler
 
 ## Yol haritası ve kurulum
 Ayrıntılar için README.md dosyasına bak.
+
+## Durum
+- [x] Kurulum (.venv, requirements.txt, .gitignore)
+- [x] encoding.py: text_to_bits, byte_to_int, bits_to_text + testler
+- [x] channel.py: transmit(bits, error_rate, seed), find_error_positions + testler
+- [x] error_control.py: compute_parity_bit/add_parity/check_parity ("even"/"odd"),
+      crc_remainder/add_crc/check_crc (CRC8_POLY varsayılan, CRC3_POLY elle örnek) + testler
+- [ ] arq.py (sıradaki adım)
+- [ ] app.py
+- GitHub: https://github.com/insidethematrix/datalink-simulator (main dalı)
+
+## Çalışma şekli
+- Bitler 0/1 tamsayı listesi olarak tutulur (ör. [0, 1, 0, 0, 0, 0, 0, 1]).
+- Kod adları (fonksiyon, değişken, test adları) İngilizce; yorumlar ve
+  kullanıcıya görünen mesajlar (hata mesajları, arayüz metinleri) Türkçe.
+- Her modülde kilit kısmı (2-10 satır) TODO(human) olarak ben yazıyorum;
+  sen iskeleti hazırlayıp, kodumu kontrol edip açıklıyorsun.
+- Testleri benim kodum bittikten sonra yaz, önce değil.
+- Testler: `.venv\Scripts\python.exe -m pytest -v`

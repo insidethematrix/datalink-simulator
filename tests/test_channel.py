@@ -1,39 +1,39 @@
 # channel.py modülünün testleri.
 import pytest
 
-from channel import kanaldan_gecir, hatali_konumlari_bul
+from channel import transmit, find_error_positions
 
 
 # Hata olasılığı 0 ise hiçbir bit değişmemeli.
-def test_hatasiz_kanal():
-    assert kanaldan_gecir([0, 1, 0, 1], 0.0) == [0, 1, 0, 1]
+def test_noiseless_channel():
+    assert transmit([0, 1, 0, 1], 0.0) == [0, 1, 0, 1]
 
 
 # Hata olasılığı 1 ise bütün bitler ters dönmeli.
-def test_tamamen_bozuk_kanal():
-    assert kanaldan_gecir([0, 1, 0, 1], 1.0) == [1, 0, 1, 0]
+def test_fully_noisy_channel():
+    assert transmit([0, 1, 0, 1], 1.0) == [1, 0, 1, 0]
 
 
 # Aynı seed her seferinde aynı sonucu vermeli.
-def test_ayni_seed_ayni_sonuc():
-    bitler = [0, 1] * 50
-    assert kanaldan_gecir(bitler, 0.3, seed=42) == kanaldan_gecir(bitler, 0.3, seed=42)
+def test_same_seed_same_result():
+    bits = [0, 1] * 50
+    assert transmit(bits, 0.3, seed=42) == transmit(bits, 0.3, seed=42)
 
 
 # 10000 bitte, 0.1 olasılıkla yaklaşık 1000 hata çıkmalı.
-def test_hata_orani_yaklasik_dogru():
-    bitler = [0] * 10000
-    alinan = kanaldan_gecir(bitler, 0.1, seed=1)
-    hata_sayisi = len(hatali_konumlari_bul(bitler, alinan))
-    assert 800 < hata_sayisi < 1200
+def test_error_rate_approximately_correct():
+    bits = [0] * 10000
+    received = transmit(bits, 0.1, seed=1)
+    error_count = len(find_error_positions(bits, received))
+    assert 800 < error_count < 1200
 
 
 # Geçersiz olasılık hata vermeli.
-def test_gecersiz_olasilik():
+def test_invalid_error_rate():
     with pytest.raises(ValueError):
-        kanaldan_gecir([0, 1], 1.5)
+        transmit([0, 1], 1.5)
 
 
 # Farklı bitlerin konumları doğru bulunmalı.
-def test_hatali_konumlar():
-    assert hatali_konumlari_bul([0, 1, 0, 1], [0, 0, 0, 0]) == [1, 3]
+def test_find_error_positions():
+    assert find_error_positions([0, 1, 0, 1], [0, 0, 0, 0]) == [1, 3]

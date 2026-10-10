@@ -1,28 +1,28 @@
 # encoding.py modülünün testleri.
 import pytest
 
-from encoding import metni_bitlere_cevir, bitleri_metne_cevir, sekiz_biti_sayiya_cevir
+from encoding import text_to_bits, bits_to_text, byte_to_int
 
 
 # "A" harfinin kodu 65'tir, ikili hali 01000001.
-def test_harf_bitlere_cevrilir():
-    assert metni_bitlere_cevir("A") == [0, 1, 0, 0, 0, 0, 0, 1]
+def test_letter_to_bits():
+    assert text_to_bits("A") == [0, 1, 0, 0, 0, 0, 0, 1]
 
 
 # Sekiz bitin sayıya çevrilmesi (A, en küçük ve en büyük değer).
-def test_sekiz_bit_sayiya():
-    assert sekiz_biti_sayiya_cevir([0, 1, 0, 0, 0, 0, 0, 1]) == 65
-    assert sekiz_biti_sayiya_cevir([0, 0, 0, 0, 0, 0, 0, 0]) == 0
-    assert sekiz_biti_sayiya_cevir([1, 1, 1, 1, 1, 1, 1, 1]) == 255
+def test_byte_to_int():
+    assert byte_to_int([0, 1, 0, 0, 0, 0, 0, 1]) == 65
+    assert byte_to_int([0, 0, 0, 0, 0, 0, 0, 0]) == 0
+    assert byte_to_int([1, 1, 1, 1, 1, 1, 1, 1]) == 255
 
 
 # Gidiş-dönüş: metin -> bit -> metin aynı sonucu vermeli (Türkçe harfler dahil).
-def test_gidis_donus():
-    metin = "Veri iletişimi ğüşıöç"
-    assert bitleri_metne_cevir(metni_bitlere_cevir(metin)) == metin
+def test_round_trip():
+    text = "Veri iletişimi ğüşıöç"
+    assert bits_to_text(text_to_bits(text)) == text
 
 
 # 8'in katı olmayan bit sayısı hata vermeli.
-def test_eksik_bit_hata_verir():
+def test_incomplete_bits_raise_error():
     with pytest.raises(ValueError):
-        bitleri_metne_cevir([0, 1, 0])
+        bits_to_text([0, 1, 0])
